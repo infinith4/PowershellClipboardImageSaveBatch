@@ -14,9 +14,13 @@ if ($clipboardImage -ne $null)
   $outputFilePath = Join-Path $clipboardImagesDirPath $fileName
   #Write-Output $outputFilePath
   #save as jpeg format
-  # #保存形式と保存画質の初期設定
-  # $encoderQuality = [System.Drawing.Imaging.Encoder]::Quality
-  # $encoderParams = New-Object System.Drawing.Imaging.EncoderParameters(1)
-  # $encoderParams.Param[0] = New-Object System.Drawing.Imaging.EncoderParameter($myEncoder, $quality)
-  $clipboardImage.Save($outputFilePath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
+  #http://pc-diary.com/blog/2018/10/windows_powershell.html
+  #initialize format and quality
+  $quality = 100
+  $encoderQuality = [System.Drawing.Imaging.Encoder]::Quality
+  $encoderParams = New-Object System.Drawing.Imaging.EncoderParameters(1)
+  $encoderParams.Param[0] = New-Object System.Drawing.Imaging.EncoderParameter($encoderQuality, $quality)
+  #codec
+  $imageCodecInfo = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders()|where {$_.MimeType -eq 'image/jpeg'}
+  $clipboardImage.Save($outputFilePath, $imageCodecInfo, $encoderParams)
 }
